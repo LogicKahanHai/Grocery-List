@@ -1,0 +1,58 @@
+name: Rishi's Grocery App Build Flutter APK
+
+on:
+    push:
+        branches: [main]
+
+jobs:
+    android:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v2
+
+            - name: Flutter action
+              uses: subosito/flutter-action@v2.10.0
+              with:
+                channel: 'stable'
+            
+            - name: Install dependencies
+              run: flutter pub get
+
+            - name: Build APK
+              run: |
+                flutter test
+                flutter build apk --release
+
+            - name: Upload the APK
+              uses: actions/upload-artifact@v3
+              with:
+                name: release-apk
+                path: build/app/outputs/apk/release/app-release.apk
+
+    iOS:
+        runs-on: macos-latest
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v2
+
+            - name: Flutter action
+              uses: subosito/flutter-action@v2.10.0
+              with:
+                channel: 'stable'
+            
+            - name: Install dependencies
+              run: flutter pub get
+
+            - name: Build iOS
+              run: |
+                flutter test
+                flutter build ios --release --no-codesign
+
+
+            - name: Upload the iOS
+              uses: actions/upload-artifact@v3
+              with:
+                name: release-ios
+                path: build/ios/iphoneos/Runner.app
+              
